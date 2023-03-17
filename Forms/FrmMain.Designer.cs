@@ -1,4 +1,4 @@
-﻿namespace SqlValidator
+﻿namespace SqlValidator.Forms
 {
     partial class FrmMain
     {
@@ -36,7 +36,10 @@
             this.lblPassword = new System.Windows.Forms.Label();
             this.lblUser = new System.Windows.Forms.Label();
             this.txbPassword = new System.Windows.Forms.TextBox();
-            this.btnCompare = new System.Windows.Forms.Button();
+            this.btnCompareColumns = new System.Windows.Forms.Button();
+            this.lblCredentials = new System.Windows.Forms.Label();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.btnCompareIndexes = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txbServer
@@ -111,22 +114,55 @@
             this.txbPassword.Text = "softium";
             this.txbPassword.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // btnCompare
+            // btnCompareColumns
             // 
-            this.btnCompare.Location = new System.Drawing.Point(461, 385);
-            this.btnCompare.Name = "btnCompare";
-            this.btnCompare.Size = new System.Drawing.Size(182, 50);
-            this.btnCompare.TabIndex = 8;
-            this.btnCompare.Text = "Comparar";
-            this.btnCompare.UseVisualStyleBackColor = true;
-            this.btnCompare.Click += new System.EventHandler(this.btnCompare_Click);
+            this.btnCompareColumns.Location = new System.Drawing.Point(336, 398);
+            this.btnCompareColumns.Name = "btnCompareColumns";
+            this.btnCompareColumns.Size = new System.Drawing.Size(182, 50);
+            this.btnCompareColumns.TabIndex = 8;
+            this.btnCompareColumns.Text = "Comparar Colunas";
+            this.btnCompareColumns.UseVisualStyleBackColor = true;
+            this.btnCompareColumns.Click += new System.EventHandler(this.btnCompare_Click);
+            // 
+            // lblCredentials
+            // 
+            this.lblCredentials.AutoSize = true;
+            this.lblCredentials.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblCredentials.Location = new System.Drawing.Point(335, 106);
+            this.lblCredentials.Name = "lblCredentials";
+            this.lblCredentials.Size = new System.Drawing.Size(445, 29);
+            this.lblCredentials.TabIndex = 9;
+            this.lblCredentials.Text = "Insira as credenciais do banco de dados";
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.AutoSize = true;
+            this.lblStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblStatus.Location = new System.Drawing.Point(456, 491);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(177, 29);
+            this.lblStatus.TabIndex = 10;
+            this.lblStatus.Text = "Comparando ...";
+            // 
+            // btnCompareIndexes
+            // 
+            this.btnCompareIndexes.Location = new System.Drawing.Point(577, 398);
+            this.btnCompareIndexes.Name = "btnCompareIndexes";
+            this.btnCompareIndexes.Size = new System.Drawing.Size(182, 50);
+            this.btnCompareIndexes.TabIndex = 11;
+            this.btnCompareIndexes.Text = "Comparar Índices";
+            this.btnCompareIndexes.UseVisualStyleBackColor = true;
+            this.btnCompareIndexes.Click += new System.EventHandler(this.btnCompareIndexes_Click);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1143, 662);
-            this.Controls.Add(this.btnCompare);
+            this.Controls.Add(this.btnCompareIndexes);
+            this.Controls.Add(this.lblStatus);
+            this.Controls.Add(this.lblCredentials);
+            this.Controls.Add(this.btnCompareColumns);
             this.Controls.Add(this.txbPassword);
             this.Controls.Add(this.lblUser);
             this.Controls.Add(this.lblPassword);
@@ -135,6 +171,7 @@
             this.Controls.Add(this.txbUser);
             this.Controls.Add(this.txbDatabase);
             this.Controls.Add(this.txbServer);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "FrmMain";
             this.Text = "Validação de tabelas do TactiumIP";
             this.ResumeLayout(false);
@@ -152,7 +189,10 @@
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.Label lblUser;
         private System.Windows.Forms.TextBox txbPassword;
-        private System.Windows.Forms.Button btnCompare;
+        private System.Windows.Forms.Button btnCompareColumns;
+        private System.Windows.Forms.Label lblCredentials;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.Button btnCompareIndexes;
     }
 }
 

@@ -30,6 +30,9 @@ namespace SqlValidator.Services
                 connection.Open();
                 var createTableCommand = new SQLiteCommand($"CREATE TABLE IF NOT EXISTS Columns ( TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,DataType TEXT NOT NULL,MaximunLength TEXT NOT NULL)", connection);
                 createTableCommand.ExecuteNonQuery();
+                createTableCommand.CommandText = $"CREATE TABLE IF NOT EXISTS Indexes ( TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,IndexName TEXT NOT NULL,IndexType TEXT NOT NULL)";
+                createTableCommand.ExecuteNonQuery();
+
             }
         }
 
@@ -51,21 +54,65 @@ namespace SqlValidator.Services
             }
         }
 
-        public List<T> LoadObjects<T>()
+        public void SaveIndexes(List<Index> objects)
         {
-            var objects = new List<T>();
+            using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
+            {
+                connection.Open();
+
+                foreach (var obj in objects)
+                {
+                    var insertCommand = new SQLiteCommand($"INSERT INTO Indexes (TableName,ColumnName,IndexName,IndexType) VALUES (@TableName,@ColumnName ,@IndexName, @IndexType)", connection);
+                    insertCommand.Parameters.AddWithValue("@TableName", obj.TableName);
+                    insertCommand.Parameters.AddWithValue("@ColumnName", obj.ColumnName);
+                    insertCommand.Parameters.AddWithValue("@IndexName", obj.IndexName);
+                    insertCommand.Parameters.AddWithValue("@IndexType", obj.IndexType);
+                    insertCommand.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public List<Column> LoadColumns()
+        {
+            var objects = new List<Column>();
 
             using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
             {
                 connection.Open();
-                var selectCommand = new SQLiteCommand($"SELECT json FROM {_tableName}", connection);
+                var selectCommand = new SQLiteCommand($"SELECT * FROM Columns", connection);
                 var reader = selectCommand.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    var json = reader.GetString(0);
-                    var obj = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
-                    objects.Add(obj);
+                    Column linha = new Column();
+                    linha.TableName = reader.GetString(0);
+                    linha.ColumnName = reader.GetString(1);
+                    linha.DataType = reader.GetString(2);
+                    linha.MaximunLength = reader[3] is DBNull ? String.Empty : reader[3].ToString();
+                    objects.Add(linha);
+                }
+            }
+
+            return objects;
+        }
+        public List<Index> LoadIndexes()
+        {
+            var objects = new List<Index>();
+
+            using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
+            {
+                connection.Open();
+                var selectCommand = new SQLiteCommand($"SELECT * FROM Indexes", connection);
+                var reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Index linha = new Index();
+                    linha.TableName = reader.GetString(0);
+                    linha.ColumnName = reader.GetString(1);
+                    linha.IndexName = reader.GetString(2);
+                    linha.IndexType = reader.GetString(3);
+                    objects.Add(linha);
                 }
             }
 
