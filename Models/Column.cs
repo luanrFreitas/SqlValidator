@@ -12,6 +12,7 @@ namespace SqlValidator.Models
         public string ColumnName { get; set; }
         public string DataType { get; set; }
         public string MaximunLength { get; set; }
+        public string IsNullable { get; set; }
 
     }
     public class ColumnsComparer : IComparer<Column>, IEqualityComparer<Column>
@@ -31,7 +32,7 @@ namespace SqlValidator.Models
         {
             if (x == null || y == null)
                 return false;
-            return x.TableName.ToLower() == y.TableName.ToLower() && x.ColumnName.ToLower() == y.ColumnName.ToLower() && x.DataType.ToLower() == y.DataType.ToLower() && x.MaximunLength.ToLower() == y.MaximunLength.ToLower();
+            return x.TableName.ToLower() == y.TableName.ToLower() && x.ColumnName.ToLower() == y.ColumnName.ToLower() && x.DataType.ToLower() == y.DataType.ToLower() && x.MaximunLength.ToLower() == y.MaximunLength.ToLower() && x.IsNullable.ToLower() == y.IsNullable.ToLower();
         }
 
         public int GetHashCode(Column obj)
@@ -40,7 +41,8 @@ namespace SqlValidator.Models
             int hashColumnName = obj.ColumnName == null ? 0 : obj.ColumnName.ToLower().GetHashCode();
             int hashDataType = obj.DataType == null ? 0 : obj.DataType.ToLower().GetHashCode();
             int hashMaximunLength = obj.MaximunLength == null ? 0 : obj.MaximunLength.ToLower().GetHashCode();
-            return hashTableName + hashColumnName + hashDataType + hashMaximunLength;
+            int hashIsNullable = obj.IsNullable == null ? 0 : obj.IsNullable.ToLower().GetHashCode();
+            return hashTableName + hashColumnName + hashDataType + hashMaximunLength + hashIsNullable;
         }
     }
 

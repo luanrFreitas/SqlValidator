@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SQLite;
 using System.IO;
 using SqlValidator.Models;
+using System.Data.SqlTypes;
 
 namespace SqlValidator.Services
 {
@@ -28,9 +29,11 @@ namespace SqlValidator.Services
             using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
             {
                 connection.Open();
-                var createTableCommand = new SQLiteCommand($"CREATE TABLE IF NOT EXISTS Columns ( TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,DataType TEXT NOT NULL,MaximunLength TEXT NOT NULL)", connection);
+                var createTableCommand = new SQLiteCommand($"CREATE TABLE IF NOT EXISTS Columns ( TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,DataType TEXT NOT NULL,MaximunLength TEXT NOT NULL,IsNullable TEXT NOT NULL)", connection);
                 createTableCommand.ExecuteNonQuery();
                 createTableCommand.CommandText = $"CREATE TABLE IF NOT EXISTS Indexes ( TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,IndexName TEXT NOT NULL,IndexType TEXT NOT NULL)";
+                createTableCommand.ExecuteNonQuery();
+                createTableCommand.CommandText = $"CREATE TABLE IF NOT EXISTS Parameters ( Version TEXT NOT NULL,Collation TEXT NOT NULL)";
                 createTableCommand.ExecuteNonQuery();
 
             }
@@ -44,11 +47,12 @@ namespace SqlValidator.Services
 
                 foreach (var obj in objects)
                 {
-                    var insertCommand = new SQLiteCommand($"INSERT INTO Columns (TableName,ColumnName,DataType,MaximunLength) VALUES (@TableName,@ColumnName ,@DataType, @MaximunLength)", connection);
+                    var insertCommand = new SQLiteCommand($"INSERT INTO Columns (TableName,ColumnName,DataType,MaximunLength,IsNullable) VALUES (@TableName,@ColumnName ,@DataType, @MaximunLength,@IsNullable)", connection);
                     insertCommand.Parameters.AddWithValue("@TableName", obj.TableName);
                     insertCommand.Parameters.AddWithValue("@ColumnName", obj.ColumnName);
                     insertCommand.Parameters.AddWithValue("@DataType", obj.DataType);
                     insertCommand.Parameters.AddWithValue("@MaximunLength", obj.MaximunLength);
+                    insertCommand.Parameters.AddWithValue("@IsNullable", obj.IsNullable);
                     insertCommand.ExecuteNonQuery();
                 }
             }
@@ -72,6 +76,21 @@ namespace SqlValidator.Services
             }
         }
 
+        public void SaveParameters(Dictionary<string,string> parameters)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
+            {
+                connection.Open();
+
+
+                var insertCommand = new SQLiteCommand($"INSERT INTO Parameters (Version,Collation) VALUES (@version,@collation)", connection);
+                insertCommand.Parameters.AddWithValue("@version", parameters["version"]);
+                insertCommand.Parameters.AddWithValue("@collation", parameters["collation"]);
+                insertCommand.ExecuteNonQuery();
+
+            }
+        }
+
         public List<Column> LoadColumns()
         {
             var objects = new List<Column>();
@@ -89,6 +108,7 @@ namespace SqlValidator.Services
                     linha.ColumnName = reader.GetString(1);
                     linha.DataType = reader.GetString(2);
                     linha.MaximunLength = reader[3] is DBNull ? String.Empty : reader[3].ToString();
+                    linha.IsNullable = reader.GetString(4);
                     objects.Add(linha);
                 }
             }
@@ -117,6 +137,26 @@ namespace SqlValidator.Services
             }
 
             return objects;
+        }
+
+        public Dictionary<string, string> LoadParameters()
+        {
+           Dictionary<string,string> parameters = new Dictionary<string,string>();
+
+            using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
+            {
+                connection.Open();
+                var selectCommand = new SQLiteCommand($"SELECT version,collation FROM Parameters", connection);
+                var reader = selectCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    parameters.Add("version", reader.GetString(0));
+                    parameters.Add("collation", reader.GetString(1));
+                }
+            }
+
+            return parameters;
         }
     }
 }

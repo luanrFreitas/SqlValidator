@@ -11,11 +11,12 @@ namespace SqlValidator.Services
     public class SqlServices
     {
         private string connectionString;
+        public string DatabaseName;
 
         public SqlServices(string server, string database, string user, string password)
         {
             connectionString = $"user id={user};Server={server};persist security info=False;initial catalog={database}; Password={password}";
-
+            DatabaseName= database ;
 
         }
 
@@ -23,7 +24,7 @@ namespace SqlValidator.Services
         {
             List<Column> resultado = new List<Column>();
 
-            string query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME NOT LIKE '%T_TIM%' AND TABLE_NAME NOT LIKE '%T_TTI%' AND TABLE_NAME NOT LIKE '%T_IDG%' AND TABLE_NAME NOT LIKE '%T_TDI%' AND TABLE_NAME NOT LIKE '%T_TIT%' AND TABLE_NAME NOT LIKE '%T_IML%' AND TABLE_NAME NOT LIKE '%T_TMP%' AND TABLE_NAME NOT LIKE '%T_Mailing%' AND TABLE_NAME <> 'sysdiagrams'";
+            string query = "SELECT TABLE_NAME, COLUMN_NAME, DATA_TYPE, CHARACTER_MAXIMUM_LENGTH, IS_NULLABLE  FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME NOT LIKE '%T_TIM%' AND TABLE_NAME NOT LIKE '%T_TTI%' AND TABLE_NAME NOT LIKE '%T_IDG%' AND TABLE_NAME NOT LIKE '%T_TDI%' AND TABLE_NAME NOT LIKE '%T_TIT%' AND TABLE_NAME NOT LIKE '%T_IML%' AND TABLE_NAME NOT LIKE '%T_TMP%' AND TABLE_NAME NOT LIKE '%T_Mailing%' AND TABLE_NAME <> 'sysdiagrams'";
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -43,6 +44,7 @@ namespace SqlValidator.Services
                         linha.MaximunLength = "MAX";
                     else
                         linha.MaximunLength = reader[3].ToString();
+                    linha.IsNullable = reader.GetString(4);
 
                     resultado.Add(linha);
                 }
@@ -79,7 +81,7 @@ namespace SqlValidator.Services
 	                            AND  OBJECT_NAME(i.object_id) NOT LIKE '%T_TDI%'
 	                            AND  OBJECT_NAME(i.object_id) NOT LIKE '%T_TIM%'
 	                            AND  OBJECT_NAME(i.object_id) NOT LIKE '%wpr_bucket%'
-	
+	                            AND  i.name NOT LIKE '%PK__%'
                             ORDER BY
                                 TableName,
 	                            ColumnName,
@@ -106,6 +108,42 @@ namespace SqlValidator.Services
             }
 
             return resultado;
+        }
+
+        public Dictionary<string,string> GetParameters()
+        {
+            Dictionary<string, string> parameters = new Dictionary<string, string>();
+
+            string query = $"SELECT DATABASEPROPERTYEX('{DatabaseName}', 'Collation') AS 'Collation'";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    parameters.Add("collation", reader.GetString(0));
+                }
+
+                reader.Close();
+
+                command.CommandText= "Select CONCAT(nr_par_sub_release,'.',nr_par_ptf) from t_par";
+
+               
+
+                reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    parameters.Add("version", reader.GetString(0));
+                }
+
+                reader.Close();
+            }
+
+            return parameters;
         }
     }
 }
