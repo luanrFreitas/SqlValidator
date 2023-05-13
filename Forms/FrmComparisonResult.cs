@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -16,9 +17,9 @@ namespace SqlValidator.Forms
     public partial class FrmComparisonResult : Form
     {
         List<Column> _columns;
-        List<Column> _template;
-        List<Column> _notInDB;
-        List<Column> _notInTemplate;
+        List<Column> _columnsTemplate;
+        List<Column> _columnsNotInDB;
+        List<Column> _columnsNotInTemplate;
 
         List<Index> _indexes;
         List<Index> _indexesTemplate;
@@ -34,25 +35,25 @@ namespace SqlValidator.Forms
         String _dbVersion;
 
 
-        public FrmComparisonResult(List<Column> template, List<Column> columns, List<Column> notInDB, List<Column> notInTemplate,SqlServices sqlServices, SqliteServices sqliteServices)
+        public FrmComparisonResult(List<Column> template, List<Column> columns, List<Column> notInDB, List<Column> notInTemplate,SqlServices sqlServices, SqliteServices sqliteServices,string product)
         {
             _columns = columns;
-            _template = template;
-            _notInDB = notInDB;
-            _notInTemplate = notInTemplate;
+            _columnsTemplate = template;
+            _columnsNotInDB = notInDB;
+            _columnsNotInTemplate = notInTemplate;
             _compareType = "Column";
             InitializeComponent();
             _sqlServices = sqlServices;
             _sqliteServices = sqliteServices;
             _sqliteServices = sqliteServices;
 
-            _modelCollation = _sqliteServices.LoadParameters()["collation"];
+            _modelCollation = _sqliteServices.LoadParameters(product)["collation"];
             _dbCollation = _sqlServices.GetParameters()["collation"];
-            _modelVersion = _sqliteServices.LoadParameters()["version"];
+            _modelVersion = _sqliteServices.LoadParameters(product)["version"];
             _dbVersion = _sqlServices.GetParameters()["version"];
  
         }
-        public FrmComparisonResult(List<Index> template, List<Index> indexes, List<Index> notInDB, List<Index> notInTemplate, SqlServices sqlServices, SqliteServices sqliteServices)
+        public FrmComparisonResult(List<Index> template, List<Index> indexes, List<Index> notInDB, List<Index> notInTemplate, SqlServices sqlServices, SqliteServices sqliteServices,string product)
         {
             _indexes = indexes;
             _indexesTemplate = template;
@@ -63,9 +64,9 @@ namespace SqlValidator.Forms
             _sqlServices = sqlServices;
             _sqliteServices= sqliteServices;
 
-            _modelCollation = _sqliteServices.LoadParameters()["collation"];
+            _modelCollation = _sqliteServices.LoadParameters(product)["collation"];
             _dbCollation = _sqlServices.GetParameters()["collation"];
-            _modelVersion = _sqliteServices.LoadParameters()["version"];
+            _modelVersion = _sqliteServices.LoadParameters(product)["version"];
             _dbVersion = _sqlServices.GetParameters()["version"];
         }
 
@@ -77,6 +78,28 @@ namespace SqlValidator.Forms
             lblModelCollate.Text = _modelCollation;
             lblDBVersion.Text = _dbVersion;
             lblModelVersion.Text = _modelVersion;
+
+            if (_dbVersion == _modelVersion)
+            {
+                lblDBVersion.ForeColor = Color.Black;
+                lblModelVersion.ForeColor = Color.Black;
+            }
+            else
+            {
+                lblDBVersion.ForeColor = Color.Red;
+                lblModelVersion.ForeColor = Color.Red;
+            }
+
+            if (_modelCollation == _dbCollation)
+            {
+                lblDBCollate.ForeColor = Color.Black;
+                lblModelCollate.ForeColor = Color.Black;
+            }
+            else
+            {
+                lblDBCollate.ForeColor = Color.Red;
+                lblModelCollate.ForeColor = Color.Red;
+            }
         }
 
         private void btnViewDatabaseModel_Click(object sender, EventArgs e)
@@ -87,16 +110,16 @@ namespace SqlValidator.Forms
             btnViewDiffDatabaseConsulted.Enabled = true;
             if (_compareType == "Column")
             {
-                lblResultDetail.Text = "Exibindo as colunas da base de modelo";
-                lblResultDetail.Location = new Point(180, 72);
+                lblResultDetail.Text = "Exibindo as colunas da base de referência";
+                lblResultDetail.Location = new Point(188, 80);
                 lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 11);
                 dtgComparisonResult.Columns.Clear();
-                dtgComparisonResult.DataSource = _template;
+                dtgComparisonResult.DataSource = _columnsTemplate;
             }
             else
             {
-                lblResultDetail.Text = "Exibindo os índices da base de modelo";
-                lblResultDetail.Location = new Point(180, 72);
+                lblResultDetail.Text = "Exibindo os índices da base de referência";
+                lblResultDetail.Location = new Point(188, 80);
                 lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 11);
                 dtgComparisonResult.Columns.Clear();
                 dtgComparisonResult.DataSource = _indexesTemplate;
@@ -112,7 +135,7 @@ namespace SqlValidator.Forms
             if (_compareType == "Column")
             {
                 lblResultDetail.Text = "Exibindo as colunas da base de consultada";
-                lblResultDetail.Location = new Point(180, 72);
+                lblResultDetail.Location = new Point(188, 80);
                 lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 11);
                 dtgComparisonResult.Columns.Clear();
                 dtgComparisonResult.DataSource = _columns;
@@ -120,7 +143,7 @@ namespace SqlValidator.Forms
             else
             {
                 lblResultDetail.Text = "Exibindo os índices da base de consultada";
-                lblResultDetail.Location = new Point(180, 72);
+                lblResultDetail.Location = new Point(188, 80);
                 lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 11);
                 dtgComparisonResult.Columns.Clear();
                 dtgComparisonResult.DataSource = _indexes;
@@ -135,17 +158,17 @@ namespace SqlValidator.Forms
             btnViewDiffDatabaseConsulted.Enabled = true;
             if (_compareType == "Column")
             {
-                lblResultDetail.Text = "Exibindo as colunas que existem na base consultada que não existem ou estão diferentes da base modelo";
-                lblResultDetail.Location = new Point(18, 72);
-                lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 9);
+                lblResultDetail.Text = "Exibindo as colunas que existem na base consultada que não existem ou estão diferentes da base referência";
+                lblResultDetail.Location = new Point(18, 80);
+                lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 11);
                 dtgComparisonResult.Columns.Clear();
-                dtgComparisonResult.DataSource = _notInTemplate;
+                dtgComparisonResult.DataSource = _columnsNotInTemplate;
             }
             else
             {
-                lblResultDetail.Text = "Exibindo os índices que existem na base consultada que não existem ou estão diferentes da base modelo";
-                lblResultDetail.Location = new Point(18, 72);
-                lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 9);
+                lblResultDetail.Text = "Exibindo os índices que existem na base consultada que não existem ou estão diferentes da base referência";
+                lblResultDetail.Location = new Point(18, 80);
+                lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 11);
                 dtgComparisonResult.Columns.Clear();
                 dtgComparisonResult.DataSource = _indexesNotInTemplate;
             }
@@ -159,17 +182,17 @@ namespace SqlValidator.Forms
             btnViewDiffDatabaseConsulted.Enabled = false;
             if (_compareType == "Column")
             {
-                lblResultDetail.Text = "Exibindo as colunas que existem na base modelo que não existem ou estão diferentes da base consultada";
-                lblResultDetail.Location = new Point(18, 72);
-                lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily,9);
+                lblResultDetail.Text = "Exibindo as colunas que existem na base referência que não existem ou estão diferentes da base consultada";
+                lblResultDetail.Location = new Point(18, 83);
+                lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily,11);
                 dtgComparisonResult.Columns.Clear();
-                dtgComparisonResult.DataSource = _notInDB;
+                dtgComparisonResult.DataSource = _columnsNotInDB;
             }
             else
             {
-                lblResultDetail.Text = "Exibindo os índices que existem na base modelo que não existem ou estão diferentes da base consultada";
-                lblResultDetail.Location = new Point(18, 72);
-                lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 9);
+                lblResultDetail.Text = "Exibindo os índices que existem na base referência que não existem ou estão diferentes da base consultada";
+                lblResultDetail.Location = new Point(18, 83);
+                lblResultDetail.Font = new Font(lblResultDetail.Font.FontFamily, 11);
                 dtgComparisonResult.Columns.Clear();
                 dtgComparisonResult.DataSource = _indexesNotInDB;
             }
@@ -177,55 +200,58 @@ namespace SqlValidator.Forms
 
         private void btnDownloadDiffs_Click(object sender, EventArgs e)
         {
-            SaveFileDialog saveFileDialogdlg = new SaveFileDialog();
-            saveFileDialogdlg.Filter = "csv files (*.csv)|*.csv";
-            saveFileDialogdlg.RestoreDirectory = true;
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "csv files (*.csv)|*.csv";
+            saveFileDialog.RestoreDirectory = true;
 
-            if (saveFileDialogdlg.ShowDialog()== DialogResult.OK)
+            if (saveFileDialog.ShowDialog()== DialogResult.OK)
             {
-                using (StreamWriter writer = new StreamWriter(saveFileDialogdlg.FileName))
+                using (StreamWriter writer = new StreamWriter(saveFileDialog.FileName))
                 {
                     if (_compareType == "Column")
                     {
 
                         writer.WriteLine("**-Colunas que existem na base consultada que não existem ou estão diferentes da base modelo-**");
-                        writer.WriteLine("TableName,ColumnName,DataType,MaximunLength,IsNullable");
+                        writer.WriteLine("TableName;ColumnName;DataType;MaximunLength;IsNullable");
 
-                        foreach (Column column in _notInTemplate)
+                        foreach (Column column in _columnsNotInTemplate)
                         {
-                            writer.WriteLine($"{column.TableName},{column.ColumnName},{column.DataType},{column.MaximunLength},{column.IsNullable}");
+                            writer.WriteLine($"{column.TableName};{column.ColumnName};{column.DataType};{column.MaximunLength};{column.IsNullable}");
                         }
 
                         writer.WriteLine("**-Colunas que existem na base modelo que não existem ou estão diferentes da base consultada-**");
-                        writer.WriteLine("TableName,ColumnName,DataType,MaximunLength,IsNullable");
+                        writer.WriteLine("TableName;ColumnName;DataType;MaximunLength;IsNullable");
 
-                        foreach (Column column in _notInDB)
+                        foreach (Column column in _columnsNotInDB)
                         {
-                            writer.WriteLine($"{column.TableName},{column.ColumnName},{column.DataType},{column.MaximunLength},{column.IsNullable}");
+                            writer.WriteLine($"{column.TableName};{column.ColumnName};{column.DataType};{column.MaximunLength};{column.IsNullable}");
                         }
 
                     }
                     else
                     {
                         writer.WriteLine("**-Índices que existem na base consultada que não existem ou estão diferentes da base modelo-**");
-                        writer.WriteLine("TableName,ColumnName,IndexName,IndexType");
+                        writer.WriteLine("TableName;ColumnName;IndexName;IndexType");
 
                         foreach (Index index in _indexesNotInTemplate)
                         {
-                            writer.WriteLine($"{index.TableName},{index.ColumnName},{index.IndexName},{index.IndexType}");
+                            writer.WriteLine($"{index.TableName};{index.ColumnName};{index.IndexName};{index.IndexType}");
                         }
 
                         writer.WriteLine("**-Colunas que existem na base modelo que não existem ou estão diferentes da base consultada-**");
-                        writer.WriteLine("TableName,ColumnName,IndexName,IndexType");
+                        writer.WriteLine("TableName;ColumnName;IndexName;IndexType");
 
                         foreach (Index index in _indexesNotInDB)
                         {
-                            writer.WriteLine($"{index.TableName},{index.ColumnName},{index.IndexName},{index.IndexType}");
+                            writer.WriteLine($"{index.TableName};{index.ColumnName};{index.IndexName};{index.IndexType}");
                         }
                     }
                    
                 }
-                MessageBox.Show("Arquivo salvo com sucesso!");
+                 DialogResult result = MessageBox.Show("Arquivo salvo com sucesso! "+ Environment.NewLine + "Clique OK para abrir o arquivo","Sucesso!",MessageBoxButtons.OKCancel,MessageBoxIcon.None);
+
+                if(result == DialogResult.OK)
+                    Process.Start(saveFileDialog.FileName);
             }
         }
 

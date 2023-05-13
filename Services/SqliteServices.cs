@@ -29,17 +29,17 @@ namespace SqlValidator.Services
             using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
             {
                 connection.Open();
-                var createTableCommand = new SQLiteCommand($"CREATE TABLE IF NOT EXISTS Columns ( TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,DataType TEXT NOT NULL,MaximunLength TEXT NOT NULL,IsNullable TEXT NOT NULL)", connection);
+                var createTableCommand = new SQLiteCommand($"CREATE TABLE IF NOT EXISTS Columns ( Product TEXT NOT NULL, TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,DataType TEXT NOT NULL,MaximunLength TEXT NOT NULL,IsNullable TEXT NOT NULL)", connection);
                 createTableCommand.ExecuteNonQuery();
-                createTableCommand.CommandText = $"CREATE TABLE IF NOT EXISTS Indexes ( TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,IndexName TEXT NOT NULL,IndexType TEXT NOT NULL)";
+                createTableCommand.CommandText = $"CREATE TABLE IF NOT EXISTS Indexes ( Product TEXT NOT NULL, TableName TEXT NOT NULL,ColumnName TEXT NOT NULL,IndexName TEXT NOT NULL,IndexType TEXT NOT NULL)";
                 createTableCommand.ExecuteNonQuery();
-                createTableCommand.CommandText = $"CREATE TABLE IF NOT EXISTS Parameters ( Version TEXT NOT NULL,Collation TEXT NOT NULL)";
+                createTableCommand.CommandText = $"CREATE TABLE IF NOT EXISTS Parameters ( Product TEXT NOT NULL, Version TEXT NOT NULL,Collation TEXT NOT NULL)";
                 createTableCommand.ExecuteNonQuery();
 
             }
         }
 
-        public void SaveColumns(List<Column> objects)
+        public void SaveColumns(List<Column> objects,string product)
         {
             using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
             {
@@ -47,7 +47,8 @@ namespace SqlValidator.Services
 
                 foreach (var obj in objects)
                 {
-                    var insertCommand = new SQLiteCommand($"INSERT INTO Columns (TableName,ColumnName,DataType,MaximunLength,IsNullable) VALUES (@TableName,@ColumnName ,@DataType, @MaximunLength,@IsNullable)", connection);
+                    var insertCommand = new SQLiteCommand($"INSERT INTO Columns (Product,TableName,ColumnName,DataType,MaximunLength,IsNullable) VALUES (@Product,@TableName,@ColumnName ,@DataType, @MaximunLength,@IsNullable)", connection);
+                    insertCommand.Parameters.AddWithValue("@Product", product);
                     insertCommand.Parameters.AddWithValue("@TableName", obj.TableName);
                     insertCommand.Parameters.AddWithValue("@ColumnName", obj.ColumnName);
                     insertCommand.Parameters.AddWithValue("@DataType", obj.DataType);
@@ -58,7 +59,7 @@ namespace SqlValidator.Services
             }
         }
 
-        public void SaveIndexes(List<Index> objects)
+        public void SaveIndexes(List<Index> objects, string product)
         {
             using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
             {
@@ -66,7 +67,8 @@ namespace SqlValidator.Services
 
                 foreach (var obj in objects)
                 {
-                    var insertCommand = new SQLiteCommand($"INSERT INTO Indexes (TableName,ColumnName,IndexName,IndexType) VALUES (@TableName,@ColumnName ,@IndexName, @IndexType)", connection);
+                    var insertCommand = new SQLiteCommand($"INSERT INTO Indexes (Product,TableName,ColumnName,IndexName,IndexType) VALUES (@Product, @TableName,@ColumnName ,@IndexName, @IndexType)", connection);
+                    insertCommand.Parameters.AddWithValue("@Product", product);
                     insertCommand.Parameters.AddWithValue("@TableName", obj.TableName);
                     insertCommand.Parameters.AddWithValue("@ColumnName", obj.ColumnName);
                     insertCommand.Parameters.AddWithValue("@IndexName", obj.IndexName);
@@ -83,7 +85,8 @@ namespace SqlValidator.Services
                 connection.Open();
 
 
-                var insertCommand = new SQLiteCommand($"INSERT INTO Parameters (Version,Collation) VALUES (@version,@collation)", connection);
+                var insertCommand = new SQLiteCommand($"INSERT INTO Parameters (Product,Version,Collation) VALUES (@product,@version,@collation)", connection);
+                insertCommand.Parameters.AddWithValue("@product", parameters["product"]);
                 insertCommand.Parameters.AddWithValue("@version", parameters["version"]);
                 insertCommand.Parameters.AddWithValue("@collation", parameters["collation"]);
                 insertCommand.ExecuteNonQuery();
@@ -91,14 +94,14 @@ namespace SqlValidator.Services
             }
         }
 
-        public List<Column> LoadColumns()
+        public List<Column> LoadColumns(string product)
         {
             var objects = new List<Column>();
 
             using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
             {
                 connection.Open();
-                var selectCommand = new SQLiteCommand($"SELECT * FROM Columns", connection);
+                var selectCommand = new SQLiteCommand($"SELECT TableName,ColumnName,DataType,MaximunLength,IsNullable FROM Columns where Product='{product}'", connection);
                 var reader = selectCommand.ExecuteReader();
 
                 while (reader.Read())
@@ -122,7 +125,7 @@ namespace SqlValidator.Services
             using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
             {
                 connection.Open();
-                var selectCommand = new SQLiteCommand($"SELECT * FROM Indexes", connection);
+                var selectCommand = new SQLiteCommand($"SELECT TableName,ColumnName,IndexName,IndexType FROM Indexes", connection);
                 var reader = selectCommand.ExecuteReader();
 
                 while (reader.Read())
@@ -139,14 +142,14 @@ namespace SqlValidator.Services
             return objects;
         }
 
-        public Dictionary<string, string> LoadParameters()
+        public Dictionary<string, string> LoadParameters(string product)
         {
            Dictionary<string,string> parameters = new Dictionary<string,string>();
 
             using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
             {
                 connection.Open();
-                var selectCommand = new SQLiteCommand($"SELECT version,collation FROM Parameters", connection);
+                var selectCommand = new SQLiteCommand($"SELECT version,collation FROM Parameters where Product ='{product}'", connection);
                 var reader = selectCommand.ExecuteReader();
 
                 while (reader.Read())
@@ -157,6 +160,20 @@ namespace SqlValidator.Services
             }
 
             return parameters;
+        }
+
+        public void DropCollumn(string table)
+        {
+            using (var connection = new SQLiteConnection($"Data Source={_databaseFilePath};Version=3;"))
+            {
+                connection.Open();
+
+
+                var deleteCommand = new SQLiteCommand($"DROP TABLE {table};", connection);
+
+                deleteCommand.ExecuteNonQuery();
+
+            }
         }
     }
 }

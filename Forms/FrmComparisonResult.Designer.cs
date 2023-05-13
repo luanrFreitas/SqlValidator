@@ -51,28 +51,28 @@
             this.dtgComparisonResult.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dtgComparisonResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgComparisonResult.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.dtgComparisonResult.Location = new System.Drawing.Point(0, 206);
+            this.dtgComparisonResult.Location = new System.Drawing.Point(0, 224);
             this.dtgComparisonResult.Margin = new System.Windows.Forms.Padding(2);
             this.dtgComparisonResult.Name = "dtgComparisonResult";
             this.dtgComparisonResult.RowHeadersWidth = 51;
             this.dtgComparisonResult.RowTemplate.Height = 24;
-            this.dtgComparisonResult.Size = new System.Drawing.Size(626, 614);
+            this.dtgComparisonResult.Size = new System.Drawing.Size(766, 628);
             this.dtgComparisonResult.TabIndex = 0;
             // 
             // btnViewDatabaseModel
             // 
-            this.btnViewDatabaseModel.Location = new System.Drawing.Point(66, 18);
+            this.btnViewDatabaseModel.Location = new System.Drawing.Point(98, 36);
             this.btnViewDatabaseModel.Margin = new System.Windows.Forms.Padding(2);
             this.btnViewDatabaseModel.Name = "btnViewDatabaseModel";
-            this.btnViewDatabaseModel.Size = new System.Drawing.Size(98, 27);
+            this.btnViewDatabaseModel.Size = new System.Drawing.Size(113, 27);
             this.btnViewDatabaseModel.TabIndex = 1;
-            this.btnViewDatabaseModel.Text = "Base Modelo";
+            this.btnViewDatabaseModel.Text = "Base de Referência";
             this.btnViewDatabaseModel.UseVisualStyleBackColor = true;
             this.btnViewDatabaseModel.Click += new System.EventHandler(this.btnViewDatabaseModel_Click);
             // 
             // btnViewDatabaseConsulted
             // 
-            this.btnViewDatabaseConsulted.Location = new System.Drawing.Point(184, 18);
+            this.btnViewDatabaseConsulted.Location = new System.Drawing.Point(231, 36);
             this.btnViewDatabaseConsulted.Margin = new System.Windows.Forms.Padding(2);
             this.btnViewDatabaseConsulted.Name = "btnViewDatabaseConsulted";
             this.btnViewDatabaseConsulted.Size = new System.Drawing.Size(98, 27);
@@ -83,23 +83,23 @@
             // 
             // btnViewDiffDatabaseModel
             // 
-            this.btnViewDiffDatabaseModel.Location = new System.Drawing.Point(319, 10);
+            this.btnViewDiffDatabaseModel.Location = new System.Drawing.Point(345, 36);
             this.btnViewDiffDatabaseModel.Margin = new System.Windows.Forms.Padding(2);
             this.btnViewDiffDatabaseModel.Name = "btnViewDiffDatabaseModel";
-            this.btnViewDiffDatabaseModel.Size = new System.Drawing.Size(104, 42);
+            this.btnViewDiffDatabaseModel.Size = new System.Drawing.Size(180, 27);
             this.btnViewDiffDatabaseModel.TabIndex = 3;
-            this.btnViewDiffDatabaseModel.Text = "Divergência Base Modelo";
+            this.btnViewDiffDatabaseModel.Text = "Divergência Base de Referência";
             this.btnViewDiffDatabaseModel.UseVisualStyleBackColor = true;
             this.btnViewDiffDatabaseModel.Click += new System.EventHandler(this.btnViewDiffDatabaseModel_Click);
             // 
             // btnViewDiffDatabaseConsulted
             // 
-            this.btnViewDiffDatabaseConsulted.Location = new System.Drawing.Point(470, 10);
+            this.btnViewDiffDatabaseConsulted.Location = new System.Drawing.Point(544, 36);
             this.btnViewDiffDatabaseConsulted.Margin = new System.Windows.Forms.Padding(2);
             this.btnViewDiffDatabaseConsulted.Name = "btnViewDiffDatabaseConsulted";
-            this.btnViewDiffDatabaseConsulted.Size = new System.Drawing.Size(104, 42);
+            this.btnViewDiffDatabaseConsulted.Size = new System.Drawing.Size(162, 27);
             this.btnViewDiffDatabaseConsulted.TabIndex = 4;
-            this.btnViewDiffDatabaseConsulted.Text = "Divergência Tabela Consultada";
+            this.btnViewDiffDatabaseConsulted.Text = "Divergência Base Consultada";
             this.btnViewDiffDatabaseConsulted.UseVisualStyleBackColor = true;
             this.btnViewDiffDatabaseConsulted.Click += new System.EventHandler(this.btnViewDiffDatabaseConsulted_Click);
             // 
@@ -107,7 +107,7 @@
             // 
             this.lblResultDetail.AutoSize = true;
             this.lblResultDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblResultDetail.Location = new System.Drawing.Point(138, 64);
+            this.lblResultDetail.Location = new System.Drawing.Point(185, 82);
             this.lblResultDetail.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblResultDetail.Name = "lblResultDetail";
             this.lblResultDetail.Size = new System.Drawing.Size(56, 15);
@@ -117,7 +117,7 @@
             // btnDownloadDiffs
             // 
             this.btnDownloadDiffs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDownloadDiffs.Location = new System.Drawing.Point(218, 121);
+            this.btnDownloadDiffs.Location = new System.Drawing.Point(291, 124);
             this.btnDownloadDiffs.Name = "btnDownloadDiffs";
             this.btnDownloadDiffs.Size = new System.Drawing.Size(141, 43);
             this.btnDownloadDiffs.TabIndex = 6;
@@ -129,7 +129,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(7, 104);
+            this.label1.Location = new System.Drawing.Point(23, 117);
             this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(169, 18);
@@ -140,7 +140,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(363, 104);
+            this.label2.Location = new System.Drawing.Point(483, 117);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(191, 18);
@@ -151,7 +151,7 @@
             // 
             this.lblModelVersion.AutoSize = true;
             this.lblModelVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModelVersion.Location = new System.Drawing.Point(169, 104);
+            this.lblModelVersion.Location = new System.Drawing.Point(196, 117);
             this.lblModelVersion.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblModelVersion.Name = "lblModelVersion";
             this.lblModelVersion.Size = new System.Drawing.Size(44, 18);
@@ -162,7 +162,7 @@
             // 
             this.lblDBVersion.AutoSize = true;
             this.lblDBVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDBVersion.Location = new System.Drawing.Point(553, 104);
+            this.lblDBVersion.Location = new System.Drawing.Point(673, 117);
             this.lblDBVersion.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDBVersion.Name = "lblDBVersion";
             this.lblDBVersion.Size = new System.Drawing.Size(44, 18);
@@ -173,7 +173,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(19, 136);
+            this.label5.Location = new System.Drawing.Point(23, 149);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(180, 18);
@@ -184,7 +184,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(389, 136);
+            this.label6.Location = new System.Drawing.Point(486, 149);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(202, 18);
@@ -195,7 +195,7 @@
             // 
             this.lblModelCollate.AutoSize = true;
             this.lblModelCollate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModelCollate.Location = new System.Drawing.Point(7, 167);
+            this.lblModelCollate.Location = new System.Drawing.Point(23, 180);
             this.lblModelCollate.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblModelCollate.Name = "lblModelCollate";
             this.lblModelCollate.Size = new System.Drawing.Size(231, 18);
@@ -206,7 +206,7 @@
             // 
             this.lblDBCollate.AutoSize = true;
             this.lblDBCollate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDBCollate.Location = new System.Drawing.Point(366, 167);
+            this.lblDBCollate.Location = new System.Drawing.Point(486, 180);
             this.lblDBCollate.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblDBCollate.Name = "lblDBCollate";
             this.lblDBCollate.Size = new System.Drawing.Size(231, 18);
@@ -217,7 +217,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(626, 820);
+            this.ClientSize = new System.Drawing.Size(766, 852);
             this.Controls.Add(this.lblDBCollate);
             this.Controls.Add(this.lblModelCollate);
             this.Controls.Add(this.label6);
